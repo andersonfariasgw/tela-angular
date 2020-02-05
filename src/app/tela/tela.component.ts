@@ -32,13 +32,13 @@ export class TelaComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('http://192.168.0.211:8080/teste/listarTodos', this.header).subscribe(data => {
+    this.http.get('http://127.0.0.1:8080/teste/listarTodos', this.header).subscribe(data => {
       this.listagem = data;
     });
   }
 
   remover(id){
-    this.http.post('http://192.168.0.211:8080/teste/remover', JSON.stringify(id), this.header).subscribe(data=>{
+    this.http.post('http://127.0.0.1:8080/teste/remover', JSON.stringify(id), this.header).subscribe(data=>{
       location.reload();
       // this.router.navigate(["/"]);
     });
