@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tela',
@@ -8,12 +12,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class TelaComponent implements OnInit {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   // tslint:disable-next-line:ban-types
   listagem: Object;
 
-  displayedColumns: string[] = ['NOME', 'CPF'];
+  displayedColumns: string[] = ['NOME', 'CPF', 'Acao'];
   dataSource = this.listagem;
 
   private header = {
@@ -22,18 +26,21 @@ export class TelaComponent implements OnInit {
     })
   };
 
-  ngOnInit() {
-
-    this.http.get('localhost:8080/teste/listarTodos', this.header).subscribe(data => {
-      console.log('aqui');
-      this.listagem = data;
-    });
-    this.listagem = [{nome: 'teste1', cpf: '52369874103.'}, {nome: 'teste2', cpf: '12345678901'}];
-
+  private handleError(error: any) { 
+    let errMsg = (error.message) ? error.message : error.status ? `${error.status} - ${error.statusText}` : 'Server error';
+    return Observable.throw(error);
   }
 
-  alertando() {
-    alert('funciona');
-    return false;
+  ngOnInit() {
+    this.http.get('http://192.168.0.211:8080/teste/listarTodos', this.header).subscribe(data => {
+      this.listagem = data;
+    });
+  }
+
+  remover(id){
+    this.http.post('http://192.168.0.211:8080/teste/remover', JSON.stringify(id), this.header).subscribe(data=>{
+      location.reload();
+      // this.router.navigate(["/"]);
+    });
   }
 }
